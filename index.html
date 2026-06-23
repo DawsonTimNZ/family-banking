@@ -195,20 +195,34 @@
 <div class="status-bar" id="statusBar"></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────
-// Replace GAS_URL with your deployed web app URL after deploying.
-// Replace API_TOKEN with the value you set in Script Properties.
-var CONFIG = {
-  GAS_URL:   'https://script.google.com/macros/s/AKfycbxXJyqsoefTpIA4X6ThP24lTrgD3X7a-mD8DyGq_ad6LAgpXFqkNjbE6UdohLwdxA_nGg/exec',
-  API_TOKEN: '545220bd-0c55-42db-ae3e-3d8cccf904f9'
-};
-// ────────────────────────────────────────────────────────────
+// GAS web app URL — safe to hardcode (not a secret)
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxXJyqsoefTpIA4X6ThP24lTrgD3X7a-mD8DyGq_ad6LAgpXFqkNjbE6UdohLwdxA_nGg/exec';
+
+// Token is stored in localStorage, never in source code.
+// On first load the user is prompted to enter it.
+function getToken() {
+  return localStorage.getItem('mbd_token') || '';
+}
+
+function promptForToken() {
+  var t = window.prompt('Enter the API token for this dashboard:');
+  if (t && t.trim()) {
+    localStorage.setItem('mbd_token', t.trim());
+    return t.trim();
+  }
+  return '';
+}
 
 var allItems = [];
 
 async function api(action, params) {
-  var body = { token: CONFIG.API_TOKEN, action: action, params: params || {} };
-  var resp = await fetch(CONFIG.GAS_URL, {
+  var token = getToken();
+  if (!token) {
+    token = promptForToken();
+    if (!token) throw new Error('No token — cannot connect.');
+  }
+  var body = { token: token, action: action, params: params || {} };
+  var resp = await fetch(GAS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -216,6 +230,10 @@ async function api(action, params) {
   });
   if (!resp.ok) throw new Error('HTTP ' + resp.status);
   var data = await resp.json();
+  if (data && data.error === 'Unauthorized') {
+    localStorage.removeItem('mbd_token');
+    throw new Error('Wrong token — cleared. Refresh to try again.');
+  }
   if (data && data.error) throw new Error(data.error);
   return data;
 }
