@@ -224,8 +224,8 @@ async function api(action, params) {
   var body = { token: token, action: action, params: params || {} };
   var resp = await fetch(GAS_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'payload=' + encodeURIComponent(JSON.stringify(body)),
     redirect: 'follow'
   });
   if (!resp.ok) throw new Error('HTTP ' + resp.status);
