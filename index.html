@@ -364,7 +364,7 @@ function render() {
 var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
 function cardHTML(item, today, soon) {
-  var dueDate = item.actionDate ? new Date(item.actionDate + 'T00:00:00') : null;
+  var dueDate = item.actionDate ? new Date(item.actionDate) : null;
   var isOverdue  = dueDate && !item.resolved && dueDate < today;
   var isDueSoon  = dueDate && !item.resolved && !isOverdue && dueDate <= soon;
   var cardCls    = isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : '';
