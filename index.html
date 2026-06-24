@@ -4,190 +4,308 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mum &amp; Dad — Banking Actions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f0f2f5;
+      --bg: #f0f4f8;
       --card: #ffffff;
-      --border: #e0e4ea;
-      --header-bg: #1a2340;
-      --primary: #1a73e8;
-      --danger: #d93025;
-      --success: #188038;
-      --warning: #f9a825;
-      --text: #202124;
-      --muted: #6b7280;
-      --overdue-bg: #fff0f0;
-      --overdue-border: #d93025;
-      --soon-border: #f9a825;
+      --border: #e2e8f0;
+      --header-bg: #0f172a;
+      --primary: #3b82f6;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --text: #1e293b;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Header ── */
     header {
-      background: var(--header-bg);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
       color: #fff;
-      padding: 16px 20px;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .header-left h1 { font-size: 1.2rem; font-weight: 700; }
-    .header-left p  { font-size: 0.7rem; letter-spacing: 0.08em; opacity: 0.6; margin-top: 2px; text-transform: uppercase; }
-    .header-badges  { display: flex; gap: 8px; align-items: center; flex: 1; }
+
+    .header-left h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .header-left p {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      opacity: 0.45;
+      margin-top: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .header-badges { display: flex; gap: 8px; align-items: center; flex: 1; }
+
     .badge {
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 0.78rem; font-weight: 600;
+      font-size: 0.73rem; font-weight: 600;
       padding: 4px 10px; border-radius: 20px;
+      letter-spacing: 0.02em;
     }
-    .badge-urgent { background: rgba(217,48,37,0.25); color: #ff8a80; }
-    .badge-open   { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); }
-    .badge svg    { width: 12px; height: 12px; }
+    .badge-urgent {
+      background: rgba(239,68,68,0.2); color: #fca5a5;
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .badge-open {
+      background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .badge svg { width: 12px; height: 12px; }
 
     /* ── Buttons ── */
     button {
-      cursor: pointer; border: none; border-radius: 6px;
-      font-size: 0.82rem; font-weight: 600;
-      padding: 7px 14px; transition: opacity 0.15s;
-      display: inline-flex; align-items: center; gap: 5px;
+      cursor: pointer; border: none; border-radius: 8px;
+      font-size: 0.82rem; font-weight: 600; font-family: inherit;
+      padding: 8px 16px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      letter-spacing: 0.01em;
     }
-    button:hover { opacity: 0.85; }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-add     { background: var(--danger); color: #fff; }
-    .btn-resolve { background: #e8f5e9; color: var(--success); border: 1px solid #a5d6a7; }
-    .btn-edit    { background: #e8f0fe; color: var(--primary); border: 1px solid #aecbfa; }
-    .btn-delete  { background: #fce8e6; color: var(--danger); border: 1px solid #f5c6c3; }
-    .btn-cancel  { background: var(--border); color: var(--text); }
+    button:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+    button:active { transform: translateY(0); box-shadow: none; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+    .btn-add     { background: var(--primary); color: #fff; box-shadow: 0 1px 4px rgba(59,130,246,0.35); }
+    .btn-resolve { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .btn-edit    { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .btn-delete  { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-cancel  { background: var(--border); color: var(--muted); }
     .btn-save    { background: var(--primary); color: #fff; }
 
     /* ── Main content ── */
-    main { max-width: 860px; margin: 0 auto; padding: 20px 16px; }
+    main { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
 
     /* ── Section headers ── */
     .section-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 12px; margin-top: 24px;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; margin-top: 28px;
     }
     .section-header:first-child { margin-top: 0; }
-    .section-icon { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .section-icon-financial { background: #e8f0fe; }
-    .section-icon-other     { background: #1a2340; }
-    .section-icon-resolved  { background: #e8f5e9; }
-    .section-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+    .section-icon {
+      width: 24px; height: 24px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .section-icon-financial { background: #dbeafe; }
+    .section-icon-other     { background: #ede9fe; }
+    .section-icon-resolved  { background: #d1fae5; }
+
+    .section-title {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+
     .section-count {
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 22px; height: 22px; padding: 0 6px;
-      border-radius: 11px; font-size: 0.75rem; font-weight: 700;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: 999px; font-size: 0.7rem; font-weight: 700;
     }
-    .count-financial { background: #e8f0fe; color: var(--primary); }
-    .count-other     { background: #1a2340; color: #fff; }
-    .count-resolved  { background: #e8f5e9; color: var(--success); }
+    .count-financial { background: #dbeafe; color: #1d4ed8; }
+    .count-other     { background: #ede9fe; color: #6d28d9; }
+    .count-resolved  { background: #d1fae5; color: #065f46; }
 
     .section-toggle {
-      background: none; border: none; padding: 4px; cursor: pointer;
-      color: var(--muted); font-size: 0.9rem; display: flex; align-items: center;
+      background: none; border: none; padding: 4px;
+      cursor: pointer; color: var(--light-muted);
+      display: flex; align-items: center;
     }
-    .section-toggle:hover { opacity: 0.7; }
+    .section-toggle:hover { opacity: 0.7; transform: none !important; box-shadow: none !important; }
+    .section-toggle svg { transition: transform 0.2s ease; }
+    .section-toggle.open svg { transform: rotate(90deg); }
 
     /* ── Empty state ── */
     .empty-card {
       background: var(--card); border: 1.5px dashed var(--border);
-      border-radius: 10px; padding: 20px;
-      text-align: center; color: var(--muted); font-size: 0.88rem;
+      border-radius: 12px; padding: 24px;
+      text-align: center; color: var(--light-muted);
+      font-size: 0.85rem; font-weight: 500;
     }
 
     /* ── Item card ── */
     .item-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 8px;
       overflow: hidden;
-      transition: box-shadow 0.15s;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
     }
-    .item-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .item-card.overdue  { border-left: 4px solid var(--overdue-border); }
-    .item-card.due-soon { border-left: 4px solid var(--soon-border); }
+    .item-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+      transform: translateY(-1px);
+    }
+    .item-card.overdue  { border-left: 4px solid var(--danger); }
+    .item-card.due-soon { border-left: 4px solid var(--warning); }
 
     .item-summary {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px 16px; cursor: pointer; user-select: none;
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px; cursor: pointer; user-select: none;
     }
 
     /* Date block */
     .date-block {
-      flex-shrink: 0; width: 48px; text-align: center;
-      border: 2px solid var(--border); border-radius: 8px;
+      flex-shrink: 0; width: 50px; text-align: center;
+      border: 1.5px solid var(--border); border-radius: 10px;
       overflow: hidden;
     }
-    .date-block.overdue  { border-color: var(--overdue-border); }
-    .date-block.due-soon { border-color: var(--soon-border); }
-    .date-day   { font-size: 1.25rem; font-weight: 800; line-height: 1.2; padding: 4px 0 0; }
-    .date-month { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--border); padding: 2px 0; margin-top: 2px; }
-    .date-block.overdue  .date-month { background: var(--overdue-border); color: #fff; }
-    .date-block.due-soon .date-month { background: var(--soon-border); color: #fff; }
+    .date-block.overdue  { border-color: #fecaca; }
+    .date-block.due-soon { border-color: #fde68a; }
+
+    .date-day {
+      font-size: 1.3rem; font-weight: 800; line-height: 1.15;
+      padding: 6px 0 2px; color: var(--text);
+    }
+    .date-block.overdue  .date-day { color: var(--danger); }
+    .date-block.due-soon .date-day { color: #b45309; }
+
+    .date-month {
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 3px 0; background: var(--border); color: var(--muted);
+    }
+    .date-block.overdue  .date-month { background: var(--danger); color: #fff; }
+    .date-block.due-soon .date-month { background: var(--warning); color: #fff; }
 
     .item-body { flex: 1; min-width: 0; }
-    .item-party { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-    .item-title { font-size: 0.95rem; font-weight: 600; }
-    .item-amount { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 2px; }
-    .overdue-label  { font-size: 0.72rem; font-weight: 700; color: var(--danger); margin-top: 3px; letter-spacing: 0.04em; }
-    .due-soon-label { font-size: 0.72rem; font-weight: 700; color: var(--warning); margin-top: 3px; letter-spacing: 0.04em; }
 
-    .item-toggle { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; padding: 2px; }
+    .item-party {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--light-muted); margin-bottom: 3px;
+    }
+
+    .item-title { font-size: 0.95rem; font-weight: 600; line-height: 1.35; }
+
+    .item-amount { font-size: 0.95rem; font-weight: 700; margin-top: 4px; }
+
+    /* Status pills */
+    .status-pill {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 999px;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.04em; margin-top: 5px;
+    }
+    .status-pill.overdue  { background: #fee2e2; color: #b91c1c; }
+    .status-pill.due-soon { background: #fef3c7; color: #92400e; }
+
+    /* Expand toggle chevron */
+    .item-toggle {
+      color: var(--light-muted); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 6px;
+      background: var(--bg);
+      transition: background 0.15s;
+    }
+    .item-summary:hover .item-toggle { background: var(--border); }
+    .item-toggle svg { transition: transform 0.2s ease; }
+    .item-toggle.open svg { transform: rotate(180deg); }
 
     /* Expanded detail */
     .item-detail {
       display: none;
-      padding: 0 16px 14px 76px;
+      padding: 14px 16px 16px 80px;
       border-top: 1px solid var(--border);
-      padding-top: 12px;
+      background: #fafbfd;
     }
     .item-detail.open { display: block; }
-    .detail-text { font-size: 0.85rem; color: var(--text); white-space: pre-wrap; margin-bottom: 8px; }
-    .source-text { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 5px; }
-    .source-text::before { content: '●'; font-size: 0.5rem; }
+
+    .detail-text {
+      font-size: 0.85rem; color: var(--text);
+      line-height: 1.65; white-space: pre-wrap; margin-bottom: 10px;
+    }
+
+    .source-text {
+      font-size: 0.75rem; color: var(--light-muted);
+      margin-bottom: 14px;
+      display: flex; align-items: flex-start; gap: 7px; line-height: 1.5;
+    }
+    .source-text::before {
+      content: '';
+      display: inline-block;
+      width: 7px; height: 7px; min-width: 7px;
+      border-radius: 50%; background: var(--border); margin-top: 4px;
+    }
+
     .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    /* Resolved section toggle */
     .resolved-header { cursor: pointer; }
 
     /* ── Modal ── */
     .modal-backdrop {
       display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5); z-index: 100;
+      background: rgba(15,23,42,0.55); z-index: 100;
       align-items: center; justify-content: center; padding: 16px;
+      backdrop-filter: blur(4px);
     }
     .modal-backdrop.open { display: flex; }
+
     .modal {
-      background: var(--card); border-radius: 12px;
-      padding: 22px; width: 100%; max-width: 480px;
+      background: var(--card); border-radius: 16px;
+      padding: 26px; width: 100%; max-width: 480px;
       max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
-    .modal h3 { font-size: 1rem; margin-bottom: 16px; }
-    label { display: block; font-size: 0.82rem; font-weight: 600; margin-top: 12px; margin-bottom: 4px; color: var(--muted); }
+
+    .modal h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; }
+
+    label {
+      display: block; font-size: 0.77rem; font-weight: 600;
+      margin-top: 14px; margin-bottom: 5px;
+      color: var(--muted); letter-spacing: 0.02em;
+    }
+
     input, select, textarea {
-      width: 100%; padding: 8px 10px;
-      border: 1px solid var(--border); border-radius: 6px;
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid var(--border); border-radius: 8px;
       font-size: 0.9rem; font-family: inherit; color: var(--text);
+      background: var(--card); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
     }
     textarea { min-height: 80px; resize: vertical; }
-    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
 
-    /* ── Status bar ── */
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+
+    /* ── Toast status ── */
     .status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 10px 18px; font-size: 0.82rem; font-weight: 500;
-      background: #333; color: #fff; display: none; z-index: 200;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      padding: 10px 22px; font-size: 0.84rem; font-weight: 600;
+      background: #1e293b; color: #fff; display: none; z-index: 200;
+      border-radius: 999px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      white-space: nowrap; text-align: center;
     }
     .status-bar.show  { display: block; }
     .status-bar.error { background: var(--danger); }
@@ -195,6 +313,7 @@
     @media (max-width: 520px) {
       .item-detail { padding-left: 16px; }
       .header-badges { display: none; }
+      main { padding: 16px 12px 60px; }
     }
   </style>
 </head>
@@ -214,14 +333,17 @@
       <span id="openCount">0</span> open
     </span>
   </div>
-  <button class="btn-add" onclick="openAddModal()">+ Add Item</button>
+  <button class="btn-add" onclick="openAddModal()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Item
+  </button>
 </header>
 
 <main>
   <!-- Financial Actions -->
   <div class="section-header">
     <div class="section-icon section-icon-financial">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a73e8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     </div>
     <span class="section-title">Financial Actions</span>
     <span class="section-count count-financial" id="financialCount">0</span>
@@ -229,9 +351,9 @@
   <div id="financialList"><div class="empty-card">No financial actions right now.</div></div>
 
   <!-- Other Actions -->
-  <div class="section-header" style="margin-top:24px">
+  <div class="section-header" style="margin-top:28px">
     <div class="section-icon section-icon-other">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
     </div>
     <span class="section-title">Other Actions</span>
     <span class="section-count count-other" id="otherCount">0</span>
@@ -239,13 +361,15 @@
   <div id="otherList"><div class="empty-card">No other actions right now.</div></div>
 
   <!-- Resolved -->
-  <div class="section-header resolved-header" style="margin-top:24px" onclick="toggleResolved()">
+  <div class="section-header resolved-header" style="margin-top:28px" onclick="toggleResolved()">
     <div class="section-icon section-icon-resolved">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="#188038"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
     <span class="section-title">Resolved</span>
     <span class="section-count count-resolved" id="resolvedCount">0</span>
-    <button class="section-toggle" id="resolvedToggle">&#9654;</button>
+    <button class="section-toggle" id="resolvedToggle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
   </div>
   <div id="resolvedList" style="display:none"></div>
 </main>
@@ -363,6 +487,8 @@ function render() {
 
 var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
+var CHEVRON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
 function cardHTML(item, today, soon) {
   var dueDate = item.actionDate ? new Date(item.actionDate) : null;
   var isOverdue  = dueDate && !item.resolved && dueDate < today;
@@ -378,20 +504,20 @@ function cardHTML(item, today, soon) {
     '</div>';
   }
 
-  var overdueLabel = '';
+  var statusPill = '';
   if (isOverdue) {
     var days = Math.round((today - dueDate) / 86400000);
-    overdueLabel = '<div class="overdue-label">OVERDUE ' + days + 'D</div>';
+    statusPill = '<span class="status-pill overdue">Overdue ' + days + 'd</span>';
   } else if (isDueSoon) {
     var days2 = Math.round((dueDate - today) / 86400000);
-    overdueLabel = '<div class="due-soon-label">DUE IN ' + days2 + 'D</div>';
+    statusPill = '<span class="status-pill due-soon">Due in ' + days2 + 'd</span>';
   }
 
   var id = esc(item.id);
   var actionBtns = item.resolved ? '' :
-    '<button class="btn-resolve" onclick="resolveItem(\'' + id + '\',event)">✓ Resolve</button>' +
-    '<button class="btn-edit"    onclick="editItem(\''    + id + '\',event)">✎ Edit</button>' +
-    '<button class="btn-delete"  onclick="deleteItem(\''  + id + '\',event)">✕ Delete</button>';
+    '<button class="btn-resolve" onclick="resolveItem(\'' + id + '\',event)">&#10003; Resolve</button>' +
+    '<button class="btn-edit"    onclick="editItem(\''    + id + '\',event)">&#9998; Edit</button>' +
+    '<button class="btn-delete"  onclick="deleteItem(\''  + id + '\',event)">&#10005; Delete</button>';
 
   return '<div class="item-card ' + cardCls + '" id="card-' + id + '">' +
     '<div class="item-summary" onclick="toggleCard(\'' + id + '\')">' +
@@ -400,9 +526,9 @@ function cardHTML(item, today, soon) {
         '<div class="item-party">' + esc(item.party) + '</div>' +
         '<div class="item-title">' + esc(item.title) + '</div>' +
         (item.amount ? '<div class="item-amount">' + esc(item.amount) + '</div>' : '') +
-        overdueLabel +
+        statusPill +
       '</div>' +
-      '<div class="item-toggle">+</div>' +
+      '<div class="item-toggle">' + CHEVRON_SVG + '</div>' +
     '</div>' +
     '<div class="item-detail" id="detail-' + id + '">' +
       (item.detail ? '<div class="detail-text">' + esc(item.detail) + '</div>' : '') +
@@ -424,13 +550,13 @@ function toggleCard(id) {
   if (!detail) return;
   var open = detail.classList.toggle('open');
   var toggle = detail.previousElementSibling.querySelector('.item-toggle');
-  if (toggle) toggle.textContent = open ? '−' : '+';
+  if (toggle) toggle.classList.toggle('open', open);
 }
 
 function toggleResolved() {
   resolvedOpen = !resolvedOpen;
   document.getElementById('resolvedList').style.display = resolvedOpen ? 'block' : 'none';
-  document.getElementById('resolvedToggle').innerHTML = resolvedOpen ? '&#9660;' : '&#9654;';
+  document.getElementById('resolvedToggle').classList.toggle('open', resolvedOpen);
 }
 
 // ── Actions ──────────────────────────────────────────────────
