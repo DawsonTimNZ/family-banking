@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mum & Dad Banking</title>
+  <title>Mum &amp; Dad — Banking Actions</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f5f5f5;
+      --bg: #f0f2f5;
       --card: #ffffff;
-      --border: #e0e0e0;
+      --border: #e0e4ea;
+      --header-bg: #1a2340;
       --primary: #1a73e8;
-      --primary-dark: #1557b0;
       --danger: #d93025;
       --success: #188038;
+      --warning: #f9a825;
       --text: #202124;
-      --muted: #5f6368;
-      --tag-financial: #e8f0fe;
-      --tag-financial-text: #1a73e8;
-      --tag-other: #fce8e6;
-      --tag-other-text: #d93025;
+      --muted: #6b7280;
+      --overdue-bg: #fff0f0;
+      --overdue-border: #d93025;
+      --soon-border: #f9a825;
     }
 
     body {
@@ -28,153 +28,234 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 16px;
     }
 
+    /* ── Header ── */
     header {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 8px;
     }
+    .header-left h1 { font-size: 1.2rem; font-weight: 700; }
+    .header-left p  { font-size: 0.7rem; letter-spacing: 0.08em; opacity: 0.6; margin-top: 2px; text-transform: uppercase; }
+    .header-badges  { display: flex; gap: 8px; align-items: center; flex: 1; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.78rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px;
+    }
+    .badge-urgent { background: rgba(217,48,37,0.25); color: #ff8a80; }
+    .badge-open   { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); }
+    .badge svg    { width: 12px; height: 12px; }
 
-    h1 { font-size: 1.25rem; font-weight: 600; }
-
+    /* ── Buttons ── */
     button {
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 8px 14px;
-      transition: opacity 0.15s;
+      cursor: pointer; border: none; border-radius: 6px;
+      font-size: 0.82rem; font-weight: 600;
+      padding: 7px 14px; transition: opacity 0.15s;
+      display: inline-flex; align-items: center; gap: 5px;
     }
     button:hover { opacity: 0.85; }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-add     { background: var(--danger); color: #fff; }
+    .btn-resolve { background: #e8f5e9; color: var(--success); border: 1px solid #a5d6a7; }
+    .btn-edit    { background: #e8f0fe; color: var(--primary); border: 1px solid #aecbfa; }
+    .btn-delete  { background: #fce8e6; color: var(--danger); border: 1px solid #f5c6c3; }
+    .btn-cancel  { background: var(--border); color: var(--text); }
+    .btn-save    { background: var(--primary); color: #fff; }
 
-    .btn-primary  { background: var(--primary); color: #fff; }
-    .btn-resolve  { background: var(--success); color: #fff; padding: 5px 10px; font-size: 0.8rem; }
-    .btn-small    { background: var(--border); color: var(--text); padding: 5px 10px; font-size: 0.8rem; }
+    /* ── Main content ── */
+    main { max-width: 860px; margin: 0 auto; padding: 20px 16px; }
 
-    section { margin-bottom: 28px; }
-    section h2 { font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    /* ── Section headers ── */
+    .section-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px; margin-top: 24px;
+    }
+    .section-header:first-child { margin-top: 0; }
+    .section-icon { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .section-icon-financial { background: #e8f0fe; }
+    .section-icon-other     { background: #1a2340; }
+    .section-icon-resolved  { background: #e8f5e9; }
+    .section-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .section-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px; padding: 0 6px;
+      border-radius: 11px; font-size: 0.75rem; font-weight: 700;
+    }
+    .count-financial { background: #e8f0fe; color: var(--primary); }
+    .count-other     { background: #1a2340; color: #fff; }
+    .count-resolved  { background: #e8f5e9; color: var(--success); }
 
-    .card {
+    .section-toggle {
+      background: none; border: none; padding: 4px; cursor: pointer;
+      color: var(--muted); font-size: 0.9rem; display: flex; align-items: center;
+    }
+    .section-toggle:hover { opacity: 0.7; }
+
+    /* ── Empty state ── */
+    .empty-card {
+      background: var(--card); border: 1.5px dashed var(--border);
+      border-radius: 10px; padding: 20px;
+      text-align: center; color: var(--muted); font-size: 0.88rem;
+    }
+
+    /* ── Item card ── */
+    .item-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 4px 12px;
-      align-items: start;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: box-shadow 0.15s;
+    }
+    .item-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .item-card.overdue  { border-left: 4px solid var(--overdue-border); }
+    .item-card.due-soon { border-left: 4px solid var(--soon-border); }
+
+    .item-summary {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px; cursor: pointer; user-select: none;
     }
 
-    .card-main { grid-column: 1; }
-    .card-actions { grid-column: 2; display: flex; gap: 6px; align-items: flex-start; padding-top: 2px; }
-
-    .card-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
-    .card-meta  { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px; }
-
-    .tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 12px;
+    /* Date block */
+    .date-block {
+      flex-shrink: 0; width: 48px; text-align: center;
+      border: 2px solid var(--border); border-radius: 8px;
+      overflow: hidden;
     }
-    .tag-financial { background: var(--tag-financial); color: var(--tag-financial-text); }
-    .tag-other     { background: var(--tag-other);     color: var(--tag-other-text); }
+    .date-block.overdue  { border-color: var(--overdue-border); }
+    .date-block.due-soon { border-color: var(--soon-border); }
+    .date-day   { font-size: 1.25rem; font-weight: 800; line-height: 1.2; padding: 4px 0 0; }
+    .date-month { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--border); padding: 2px 0; margin-top: 2px; }
+    .date-block.overdue  .date-month { background: var(--overdue-border); color: #fff; }
+    .date-block.due-soon .date-month { background: var(--soon-border); color: #fff; }
 
-    .card-party  { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
-    .card-amount { font-size: 0.95rem; font-weight: 700; color: var(--text); }
-    .card-date   { font-size: 0.8rem; color: var(--muted); }
-    .card-detail { font-size: 0.82rem; color: var(--muted); margin-top: 4px; white-space: pre-wrap; }
+    .item-body { flex: 1; min-width: 0; }
+    .item-party { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .item-title { font-size: 0.95rem; font-weight: 600; }
+    .item-amount { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 2px; }
+    .overdue-label  { font-size: 0.72rem; font-weight: 700; color: var(--danger); margin-top: 3px; letter-spacing: 0.04em; }
+    .due-soon-label { font-size: 0.72rem; font-weight: 700; color: var(--warning); margin-top: 3px; letter-spacing: 0.04em; }
 
-    .overdue  { border-left: 4px solid var(--danger); }
-    .due-soon { border-left: 4px solid #f9a825; }
+    .item-toggle { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; padding: 2px; }
 
-    .empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 24px 0; }
-
-    /* Modal */
-    .modal-backdrop {
+    /* Expanded detail */
+    .item-detail {
       display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      padding: 0 16px 14px 76px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .item-detail.open { display: block; }
+    .detail-text { font-size: 0.85rem; color: var(--text); white-space: pre-wrap; margin-bottom: 8px; }
+    .source-text { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 5px; }
+    .source-text::before { content: '●'; font-size: 0.5rem; }
+    .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Resolved section toggle */
+    .resolved-header { cursor: pointer; }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 100;
+      align-items: center; justify-content: center; padding: 16px;
     }
     .modal-backdrop.open { display: flex; }
     .modal {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
-      overflow-y: auto;
+      background: var(--card); border-radius: 12px;
+      padding: 22px; width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto;
     }
-    .modal h3 { margin-bottom: 16px; font-size: 1rem; }
-
-    label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; margin-top: 12px; }
+    .modal h3 { font-size: 1rem; margin-bottom: 16px; }
+    label { display: block; font-size: 0.82rem; font-weight: 600; margin-top: 12px; margin-bottom: 4px; color: var(--muted); }
     input, select, textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-family: inherit;
+      width: 100%; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 0.9rem; font-family: inherit; color: var(--text);
     }
     textarea { min-height: 80px; resize: vertical; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
 
-    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
-
+    /* ── Status bar ── */
     .status-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: #333; color: #fff;
-      font-size: 0.8rem; padding: 8px 16px;
-      display: none;
-      z-index: 200;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 500;
+      background: #333; color: #fff; display: none; z-index: 200;
     }
-    .status-bar.show { display: block; }
+    .status-bar.show  { display: block; }
     .status-bar.error { background: var(--danger); }
 
-    @media (max-width: 480px) {
-      .card { grid-template-columns: 1fr; }
-      .card-actions { grid-column: 1; flex-direction: row; margin-top: 8px; }
+    @media (max-width: 520px) {
+      .item-detail { padding-left: 16px; }
+      .header-badges { display: none; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Mum &amp; Dad Banking</h1>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <button class="btn-small" id="refreshBtn" onclick="loadItems()">Refresh</button>
-    <button class="btn-primary" onclick="openAddModal()">+ Add item</button>
+  <div class="header-left">
+    <h1>Mum &amp; Dad — Banking Actions</h1>
+    <p>Family Action Items Tracker</p>
   </div>
+  <div class="header-badges">
+    <span class="badge badge-urgent" id="urgentBadge" style="display:none">
+      <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 1L1 10h10L6 1zm0 2l3.5 6h-7L6 3z"/></svg>
+      <span id="urgentCount">0</span> urgent
+    </span>
+    <span class="badge badge-open" id="openBadge" style="display:none">
+      <span id="openCount">0</span> open
+    </span>
+  </div>
+  <button class="btn-add" onclick="openAddModal()">+ Add Item</button>
 </header>
 
-<section>
-  <h2>Unresolved</h2>
-  <div id="unresolvedList"><p class="empty">Loading…</p></div>
-</section>
+<main>
+  <!-- Financial Actions -->
+  <div class="section-header">
+    <div class="section-icon section-icon-financial">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a73e8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    </div>
+    <span class="section-title">Financial Actions</span>
+    <span class="section-count count-financial" id="financialCount">0</span>
+  </div>
+  <div id="financialList"><div class="empty-card">No financial actions right now.</div></div>
 
-<section>
-  <h2>Resolved</h2>
-  <div id="resolvedList"><p class="empty">Loading…</p></div>
-</section>
+  <!-- Other Actions -->
+  <div class="section-header" style="margin-top:24px">
+    <div class="section-icon section-icon-other">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+    </div>
+    <span class="section-title">Other Actions</span>
+    <span class="section-count count-other" id="otherCount">0</span>
+  </div>
+  <div id="otherList"><div class="empty-card">No other actions right now.</div></div>
 
-<!-- Add item modal -->
-<div class="modal-backdrop" id="addModal">
+  <!-- Resolved -->
+  <div class="section-header resolved-header" style="margin-top:24px" onclick="toggleResolved()">
+    <div class="section-icon section-icon-resolved">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#188038"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+    </div>
+    <span class="section-title">Resolved</span>
+    <span class="section-count count-resolved" id="resolvedCount">0</span>
+    <button class="section-toggle" id="resolvedToggle">&#9654;</button>
+  </div>
+  <div id="resolvedList" style="display:none"></div>
+</main>
+
+<!-- Add / Edit modal -->
+<div class="modal-backdrop" id="itemModal">
   <div class="modal">
-    <h3>Add item</h3>
-    <label>Title *<input id="f-title" type="text" placeholder="e.g. Orcon bill payment"></label>
+    <h3 id="modalTitle">Add Item</h3>
+    <input type="hidden" id="f-id">
+    <label>Title *<input id="f-title" type="text" placeholder="e.g. Pay Orcon bill"></label>
     <label>Party *<input id="f-party" type="text" placeholder="e.g. Orcon"></label>
     <label>Category
       <select id="f-category">
@@ -186,8 +267,8 @@
     <label>Amount<input id="f-amount" type="text" placeholder="e.g. $439.99"></label>
     <label>Detail<textarea id="f-detail" placeholder="Any extra context…"></textarea></label>
     <div class="modal-actions">
-      <button class="btn-small" onclick="closeAddModal()">Cancel</button>
-      <button class="btn-primary" onclick="submitAdd()">Add</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="submitModal()">Save</button>
     </div>
   </div>
 </div>
@@ -195,32 +276,23 @@
 <div class="status-bar" id="statusBar"></div>
 
 <script>
-// GAS web app URL — safe to hardcode (not a secret)
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbxRiWyCONlDA4ZTPl10ZwGp0xW5alMK0E5C6I_mDf2jZgDlp6mi9R7M5eOjxi0jOuS4HQ/exec';
 
-// Token is stored in localStorage, never in source code.
-// On first load the user is prompted to enter it.
-function getToken() {
-  return localStorage.getItem('mbd_token') || '';
-}
-
+function getToken() { return localStorage.getItem('mbd_token') || ''; }
 function promptForToken() {
   var t = window.prompt('Enter the API token for this dashboard:');
-  if (t && t.trim()) {
-    localStorage.setItem('mbd_token', t.trim());
-    return t.trim();
-  }
+  if (t && t.trim()) { localStorage.setItem('mbd_token', t.trim()); return t.trim(); }
   return '';
 }
 
 var allItems = [];
+var resolvedOpen = false;
+var editingId = null;
 
+// ── API ──────────────────────────────────────────────────────
 async function api(action, params) {
-  var token = getToken();
-  if (!token) {
-    token = promptForToken();
-    if (!token) throw new Error('No token — cannot connect.');
-  }
+  var token = getToken() || promptForToken();
+  if (!token) throw new Error('No token — cannot connect.');
   var body = { token: token, action: action, params: params || {} };
   var resp = await fetch(GAS_URL + '?payload=' + encodeURIComponent(JSON.stringify(body)), {
     redirect: 'follow'
@@ -235,86 +307,188 @@ async function api(action, params) {
   return data;
 }
 
+// ── Load ─────────────────────────────────────────────────────
 async function loadItems() {
-  document.getElementById('refreshBtn').disabled = true;
   try {
     allItems = await api('getItems');
     render();
   } catch(e) {
     showStatus('Failed to load: ' + e.message, true);
-  } finally {
-    document.getElementById('refreshBtn').disabled = false;
   }
 }
 
+// ── Render ───────────────────────────────────────────────────
 function render() {
   var today = new Date(); today.setHours(0,0,0,0);
   var soon  = new Date(today); soon.setDate(soon.getDate() + 7);
 
-  var unresolved = allItems.filter(function(i) { return !i.resolved; });
-  var resolved   = allItems.filter(function(i) { return  i.resolved; });
+  var financial = allItems.filter(function(i) { return !i.resolved && i.category === 'financial'; });
+  var other     = allItems.filter(function(i) { return !i.resolved && i.category !== 'financial'; });
+  var resolved  = allItems.filter(function(i) { return  i.resolved; });
 
-  unresolved.sort(function(a,b) { return (a.actionDate||'').localeCompare(b.actionDate||''); });
-  resolved.sort(function(a,b)   { return (b.actionDate||'').localeCompare(a.actionDate||''); });
+  var sortByDate = function(a,b) { return (a.actionDate||'').localeCompare(b.actionDate||''); };
+  financial.sort(sortByDate); other.sort(sortByDate);
+  resolved.sort(function(a,b) { return (b.actionDate||'').localeCompare(a.actionDate||''); });
 
-  document.getElementById('unresolvedList').innerHTML =
-    unresolved.length ? unresolved.map(function(i) { return cardHTML(i, today, soon); }).join('') : '<p class="empty">Nothing unresolved.</p>';
+  var urgent = allItems.filter(function(i) {
+    if (i.resolved) return false;
+    var d = i.actionDate ? new Date(i.actionDate + 'T00:00:00') : null;
+    return d && d < today;
+  }).length;
+  var open = financial.length + other.length;
+
+  var ub = document.getElementById('urgentBadge');
+  var ob = document.getElementById('openBadge');
+  ub.style.display = urgent > 0 ? '' : 'none';
+  ob.style.display = open   > 0 ? '' : 'none';
+  document.getElementById('urgentCount').textContent = urgent;
+  document.getElementById('openCount').textContent   = open;
+
+  document.getElementById('financialCount').textContent = financial.length;
+  document.getElementById('otherCount').textContent     = other.length;
+  document.getElementById('resolvedCount').textContent  = resolved.length;
+
+  document.getElementById('financialList').innerHTML =
+    financial.length ? financial.map(function(i) { return cardHTML(i, today, soon); }).join('') :
+    '<div class="empty-card">No financial actions right now.</div>';
+
+  document.getElementById('otherList').innerHTML =
+    other.length ? other.map(function(i) { return cardHTML(i, today, soon); }).join('') :
+    '<div class="empty-card">No other actions right now.</div>';
+
   document.getElementById('resolvedList').innerHTML =
-    resolved.length ? resolved.map(function(i) { return cardHTML(i, today, soon); }).join('') : '<p class="empty">Nothing resolved yet.</p>';
+    resolved.length ? resolved.map(function(i) { return cardHTML(i, today, soon); }).join('') :
+    '<div class="empty-card">Nothing resolved yet.</div>';
 }
+
+var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
 function cardHTML(item, today, soon) {
   var dueDate = item.actionDate ? new Date(item.actionDate + 'T00:00:00') : null;
-  var cls = '';
-  if (dueDate && !item.resolved) {
-    if (dueDate < today) cls = 'overdue';
-    else if (dueDate <= soon) cls = 'due-soon';
-  }
-  var tagCls  = item.category === 'financial' ? 'tag-financial' : 'tag-other';
-  var tagLabel = item.category === 'financial' ? 'Financial' : 'Other';
-  var actions = item.resolved ? '' :
-    '<button class="btn-resolve" onclick="resolveItem(\'' + esc(item.id) + '\')">Mark resolved</button>';
+  var isOverdue  = dueDate && !item.resolved && dueDate < today;
+  var isDueSoon  = dueDate && !item.resolved && !isOverdue && dueDate <= soon;
+  var cardCls    = isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : '';
+  var dateCls    = isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : '';
 
-  return '<div class="card ' + cls + '">' +
-    '<div class="card-main">' +
-      '<div class="card-title">' + esc(item.title) + '</div>' +
-      '<div class="card-meta">' +
-        '<span class="tag ' + tagCls + '">' + tagLabel + '</span>' +
-        '<span class="card-party">' + esc(item.party) + '</span>' +
-        (item.amount ? '<span class="card-amount">' + esc(item.amount) + '</span>' : '') +
-        (item.actionDate ? '<span class="card-date">Due ' + item.actionDate + '</span>' : '') +
+  var dateBlock = '';
+  if (dueDate) {
+    dateBlock = '<div class="date-block ' + dateCls + '">' +
+      '<div class="date-day">' + dueDate.getDate() + '</div>' +
+      '<div class="date-month">' + MONTHS[dueDate.getMonth()] + '</div>' +
+    '</div>';
+  }
+
+  var overdueLabel = '';
+  if (isOverdue) {
+    var days = Math.round((today - dueDate) / 86400000);
+    overdueLabel = '<div class="overdue-label">OVERDUE ' + days + 'D</div>';
+  } else if (isDueSoon) {
+    var days2 = Math.round((dueDate - today) / 86400000);
+    overdueLabel = '<div class="due-soon-label">DUE IN ' + days2 + 'D</div>';
+  }
+
+  var id = esc(item.id);
+  var actionBtns = item.resolved ? '' :
+    '<button class="btn-resolve" onclick="resolveItem(\'' + id + '\',event)">✓ Resolve</button>' +
+    '<button class="btn-edit"    onclick="editItem(\''    + id + '\',event)">✎ Edit</button>' +
+    '<button class="btn-delete"  onclick="deleteItem(\''  + id + '\',event)">✕ Delete</button>';
+
+  return '<div class="item-card ' + cardCls + '" id="card-' + id + '">' +
+    '<div class="item-summary" onclick="toggleCard(\'' + id + '\')">' +
+      dateBlock +
+      '<div class="item-body">' +
+        '<div class="item-party">' + esc(item.party) + '</div>' +
+        '<div class="item-title">' + esc(item.title) + '</div>' +
+        (item.amount ? '<div class="item-amount">' + esc(item.amount) + '</div>' : '') +
+        overdueLabel +
       '</div>' +
-      (item.detail ? '<div class="card-detail">' + esc(item.detail) + '</div>' : '') +
+      '<div class="item-toggle">+</div>' +
     '</div>' +
-    (actions ? '<div class="card-actions">' + actions + '</div>' : '') +
+    '<div class="item-detail" id="detail-' + id + '">' +
+      (item.detail ? '<div class="detail-text">' + esc(item.detail) + '</div>' : '') +
+      (item.source ? '<div class="source-text">' + esc(item.source) + '</div>' : '') +
+      (actionBtns  ? '<div class="item-actions">' + actionBtns + '</div>' : '') +
+    '</div>' +
   '</div>';
 }
 
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-async function resolveItem(id) {
+// ── Card expand/collapse ──────────────────────────────────────
+function toggleCard(id) {
+  var detail = document.getElementById('detail-' + id);
+  if (!detail) return;
+  var open = detail.classList.toggle('open');
+  var toggle = detail.previousElementSibling.querySelector('.item-toggle');
+  if (toggle) toggle.textContent = open ? '−' : '+';
+}
+
+function toggleResolved() {
+  resolvedOpen = !resolvedOpen;
+  document.getElementById('resolvedList').style.display = resolvedOpen ? 'block' : 'none';
+  document.getElementById('resolvedToggle').innerHTML = resolvedOpen ? '&#9660;' : '&#9654;';
+}
+
+// ── Actions ──────────────────────────────────────────────────
+async function resolveItem(id, e) {
+  if (e) e.stopPropagation();
   try {
     await api('resolveItem', { id: id });
     var item = allItems.find(function(i) { return i.id === id; });
     if (item) item.resolved = true;
     render();
     showStatus('Marked resolved.');
-  } catch(e) {
-    showStatus('Error: ' + e.message, true);
-  }
+  } catch(err) { showStatus('Error: ' + err.message, true); }
 }
 
+async function deleteItem(id, e) {
+  if (e) e.stopPropagation();
+  if (!confirm('Delete this item?')) return;
+  try {
+    await api('updateItem', { id: id, resolved: 'DELETED' });
+    allItems = allItems.filter(function(i) { return i.id !== id; });
+    render();
+    showStatus('Item deleted.');
+  } catch(err) { showStatus('Error: ' + err.message, true); }
+}
+
+function editItem(id, e) {
+  if (e) e.stopPropagation();
+  var item = allItems.find(function(i) { return i.id === id; });
+  if (!item) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Item';
+  document.getElementById('f-id').value         = item.id;
+  document.getElementById('f-title').value      = item.title || '';
+  document.getElementById('f-party').value      = item.party || '';
+  document.getElementById('f-category').value   = item.category || 'financial';
+  document.getElementById('f-actionDate').value = item.actionDate || '';
+  document.getElementById('f-amount').value     = item.amount || '';
+  document.getElementById('f-detail').value     = item.detail || '';
+  document.getElementById('itemModal').classList.add('open');
+}
+
+// ── Add / Edit modal ──────────────────────────────────────────
 function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add Item';
+  document.getElementById('f-id').value         = '';
+  document.getElementById('f-title').value      = '';
+  document.getElementById('f-party').value      = '';
+  document.getElementById('f-category').value   = 'financial';
   document.getElementById('f-actionDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('addModal').classList.add('open');
-}
-function closeAddModal() {
-  document.getElementById('addModal').classList.remove('open');
+  document.getElementById('f-amount').value     = '';
+  document.getElementById('f-detail').value     = '';
+  document.getElementById('itemModal').classList.add('open');
 }
 
-async function submitAdd() {
+function closeModal() { document.getElementById('itemModal').classList.remove('open'); }
+
+async function submitModal() {
   var title      = document.getElementById('f-title').value.trim();
   var party      = document.getElementById('f-party').value.trim();
   var category   = document.getElementById('f-category').value;
@@ -327,23 +501,29 @@ async function submitAdd() {
     return;
   }
 
-  var slug = party.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  var id   = slug + '-' + actionDate;
-
   try {
-    await api('addItem', {
-      id: id, category: category, actionDate: actionDate,
-      party: party, title: title, amount: amount, detail: detail,
-      source: 'manual', isManual: true
-    });
-    closeAddModal();
-    await loadItems();
-    showStatus('Item added.');
-  } catch(e) {
-    showStatus('Error: ' + e.message, true);
-  }
+    if (editingId) {
+      await api('updateItem', { id: editingId, title: title, party: party, category: category,
+        actionDate: actionDate, amount: amount, detail: detail });
+      var item = allItems.find(function(i) { return i.id === editingId; });
+      if (item) { item.title = title; item.party = party; item.category = category;
+        item.actionDate = actionDate; item.amount = amount; item.detail = detail; }
+      showStatus('Item updated.');
+    } else {
+      var slug = party.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      var id   = slug + '-' + actionDate;
+      await api('addItem', { id: id, category: category, actionDate: actionDate,
+        party: party, title: title, amount: amount, detail: detail,
+        source: 'Manual entry', isManual: true });
+      await loadItems();
+      showStatus('Item added.');
+    }
+    closeModal();
+    render();
+  } catch(err) { showStatus('Error: ' + err.message, true); }
 }
 
+// ── Status ───────────────────────────────────────────────────
 function showStatus(msg, isError) {
   var bar = document.getElementById('statusBar');
   bar.textContent = msg;
