@@ -533,6 +533,8 @@ function cardHTML(item, today, soon) {
     '<div class="item-detail" id="detail-' + id + '">' +
       (item.detail ? '<div class="detail-text">' + esc(item.detail) + '</div>' : '') +
       (item.source ? '<div class="source-text">' + esc(item.source) + '</div>' : '') +
+      (item.resolved && item.resolved !== true && item.resolved !== 'true' ?
+        '<div class="source-text">Resolved ' + new Date(item.resolved).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) + '</div>' : '') +
       (actionBtns  ? '<div class="item-actions">' + actionBtns + '</div>' : '') +
     '</div>' +
   '</div>';
