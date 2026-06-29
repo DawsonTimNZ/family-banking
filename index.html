@@ -446,9 +446,9 @@ function render() {
   var today = new Date(); today.setHours(0,0,0,0);
   var soon  = new Date(today); soon.setDate(soon.getDate() + 7);
 
-  var financial = allItems.filter(function(i) { return !i.resolved && i.category === 'financial'; });
-  var other     = allItems.filter(function(i) { return !i.resolved && i.category !== 'financial'; });
-  var resolved  = allItems.filter(function(i) { return  i.resolved; });
+  var financial = allItems.filter(function(i) { return !i.resolved && !i.deleted && i.category === 'financial'; });
+  var other     = allItems.filter(function(i) { return !i.resolved && !i.deleted && i.category !== 'financial'; });
+  var resolved  = allItems.filter(function(i) { return  i.resolved && !i.deleted; });
 
   var sortByDate = function(a,b) { return (a.actionDate||'').localeCompare(b.actionDate||''); };
   financial.sort(sortByDate); other.sort(sortByDate);
@@ -577,8 +577,9 @@ async function deleteItem(id, e) {
   if (e) e.stopPropagation();
   if (!confirm('Delete this item?')) return;
   try {
-    await api('updateItem', { id: id, resolved: 'DELETED' });
-    allItems = allItems.filter(function(i) { return i.id !== id; });
+    await api('updateItem', { id: id, deleted: new Date().toISOString() });
+    var item = allItems.find(function(i) { return i.id === id; });
+    if (item) item.deleted = true;
     render();
     showStatus('Item deleted.');
   } catch(err) { showStatus('Error: ' + err.message, true); }
